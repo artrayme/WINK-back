@@ -12,7 +12,7 @@ repositories {
         url = uri("https://maven.pkg.github.com/artrayme/jmantic")
         credentials {
             username = "artrayme"
-            password = "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"
+            password = "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"
         }
     }
 }
