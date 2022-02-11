@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DefaultWinkGraph implements WinkGraph {
     private final WinkGraphHeader header;
-    private final List<ScEdge> edges = new ArrayList<>();
+    private final List<WinkEdge> edges = new ArrayList<>();
 
     public DefaultWinkGraph(WinkGraphHeader header) {
         this.header = header;
@@ -22,12 +22,12 @@ public class DefaultWinkGraph implements WinkGraph {
     }
 
     @Override
-    public boolean addEdge(ScEdge edge) {
+    public boolean addEdge(WinkEdge edge) {
         return edges.add(edge);
     }
 
     @Override
-    public List<ScEdge> getEdges() {
+    public List<WinkEdge> getEdges() {
         return Collections.unmodifiableList(edges);
     }
 }
