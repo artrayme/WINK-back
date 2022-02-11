@@ -1,15 +1,13 @@
 package org.wink.engine.model.graph.interfaces;
 
+import org.ostis.scmemory.model.element.edge.ScEdge;
+
 import java.util.List;
 
 public interface WinkGraph {
     WinkGraphHeader getHeader();
 
-    boolean addNode(WinkNode node);
+    boolean addEdge(ScEdge edge);
 
-    boolean addEdge(WinkEdge edge);
-
-    List<WinkNode> getNodes();
-
-    List<WinkEdge> getEdges();
+    List<ScEdge> getEdges();
 }
