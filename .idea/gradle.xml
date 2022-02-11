@@ -13,7 +13,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/engine" />
-            <option value="$PROJECT_DIR$/scg-http-module" />
+            <option value="$PROJECT_DIR$/sc-json-http-module" />
           </set>
         </option>
       </GradleProjectSettings>

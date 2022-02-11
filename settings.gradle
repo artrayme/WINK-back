@@ -1,4 +1,4 @@
 rootProject.name = 'WINK-back'
-include 'scg-http-module'
+include 'sc-json-http-module'
 include 'engine'
 
