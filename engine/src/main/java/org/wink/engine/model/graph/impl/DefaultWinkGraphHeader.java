@@ -2,6 +2,10 @@ package org.wink.engine.model.graph.impl;
 
 import org.wink.engine.model.graph.interfaces.WinkGraphHeader;
 
+/**
+ * @author artrayme
+ * @since 0.0.1
+ */
 public class DefaultWinkGraphHeader implements WinkGraphHeader {
     private final String filename;
     private final String nativeFormat;

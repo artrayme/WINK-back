@@ -4,6 +4,10 @@ import org.ostis.scmemory.model.element.edge.EdgeType;
 import org.wink.engine.model.graph.interfaces.WinkElement;
 import org.wink.engine.model.graph.util.WinkElementIdGenerator;
 
+/**
+ * @author artrayme
+ * @since 0.0.1
+ */
 public class WinkEdge implements WinkElement {
     private final Long id;
     private final EdgeType type;
@@ -33,6 +37,7 @@ public class WinkEdge implements WinkElement {
         return target;
     }
 
+    @Override
     public Long getId() {
         return id;
     }

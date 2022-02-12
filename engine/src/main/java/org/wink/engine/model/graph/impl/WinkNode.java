@@ -1,9 +1,14 @@
 package org.wink.engine.model.graph.impl;
 
 import org.ostis.scmemory.model.element.node.NodeType;
+import org.wink.engine.model.graph.interfaces.WinkElement;
 import org.wink.engine.model.graph.util.WinkElementIdGenerator;
 
-public class WinkNode {
+/**
+ * @author artrayme
+ * @since 0.0.1
+ */
+public class WinkNode implements WinkElement {
     private final Long id;
     private final NodeType type;
 
@@ -20,6 +25,7 @@ public class WinkNode {
         return type;
     }
 
+    @Override
     public Long getId() {
         return id;
     }

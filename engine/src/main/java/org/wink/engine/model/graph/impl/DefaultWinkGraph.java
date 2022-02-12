@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author artrayme
+ * @since 0.0.1
+ */
 public class DefaultWinkGraph implements WinkGraph {
     private final WinkGraphHeader header;
     private final List<WinkEdge> edges = new ArrayList<>();

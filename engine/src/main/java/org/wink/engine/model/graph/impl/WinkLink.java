@@ -4,6 +4,10 @@ import org.ostis.scmemory.model.element.link.LinkContentType;
 import org.ostis.scmemory.model.element.link.LinkType;
 import org.wink.engine.model.graph.interfaces.WinkElement;
 
+/**
+ * @author artrayme
+ * @since 0.0.1
+ */
 public abstract class WinkLink implements WinkElement {
     private final Long id;
     private final LinkType type;
@@ -19,6 +23,7 @@ public abstract class WinkLink implements WinkElement {
 
     public abstract LinkContentType getContentType();
 
+    @Override
     public Long getId() {
         return id;
     }

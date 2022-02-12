@@ -4,6 +4,10 @@ import org.ostis.scmemory.model.element.link.LinkContentType;
 import org.ostis.scmemory.model.element.link.LinkType;
 import org.wink.engine.model.graph.util.WinkElementIdGenerator;
 
+/**
+ * @author artrayme
+ * @since 0.0.1
+ */
 public class WinkLinkFloat extends WinkLink {
     private final Float content;
 
