@@ -2,7 +2,7 @@ package analyser;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.wink.engine.analyser.autocompleter.Autocompleter;
+import org.wink.engine.analyser.autocompleter.DefaultAutocompleter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,9 +12,13 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author Inejka
+ * @since 0.0.1
+ */
 public class AutocompleteTest {
     private static List<String> dataset;
-    private static Autocompleter tested;
+    private static DefaultAutocompleter tested;
 
     @BeforeAll
     static void loadDataset() throws IOException {
@@ -22,7 +26,7 @@ public class AutocompleteTest {
         dataset = Files.readAllLines(Path.of(resource.getPath()))
                 .stream()
                 .toList();
-        tested = new Autocompleter(dataset);
+        tested = new DefaultAutocompleter(dataset);
     }
 
 

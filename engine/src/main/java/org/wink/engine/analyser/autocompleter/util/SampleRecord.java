@@ -5,6 +5,10 @@ import com.miguelfonseca.completely.data.Indexable;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author Inejka
+ * @since 0.0.1
+ */
 public class SampleRecord implements Indexable {
     private final String name;
 
