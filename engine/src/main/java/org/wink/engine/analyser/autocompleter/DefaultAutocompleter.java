@@ -4,6 +4,7 @@ import com.miguelfonseca.completely.AutocompleteEngine;
 import org.wink.engine.analyser.autocompleter.util.SampleAdapter;
 import org.wink.engine.analyser.autocompleter.util.SampleRecord;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -24,12 +25,12 @@ public class DefaultAutocompleter implements Autocompleter {
     }
 
     @Override
-    public Iterable<String> search(String part) {
+    public List<String> search(String part) {
         return engine.search(part).stream().map(Objects::toString).collect(Collectors.toList());
     }
 
     @Override
-    public Iterable<String> search(String part, int limit) {
+    public List<String> search(String part, int limit) {
         return engine.search(part, limit).stream().map(Objects::toString).collect(Collectors.toList());
     }
 }
