@@ -10,16 +10,7 @@ targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://maven.pkg.github.com/artrayme/jmantic")
-        credentials {
-            username = "artrayme"
-            password = "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"
-        }
-    }
 }
-
-
 
 dependencies {
     implementation project(':engine')
