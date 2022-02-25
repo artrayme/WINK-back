@@ -1,5 +1,10 @@
 package org.wink.module.http.scg.dto;
 
+
+/**
+ * @author Mikita Torap
+ * @since 0.0.1
+ */
 public class AutocompletionDto {
 
     private String part;

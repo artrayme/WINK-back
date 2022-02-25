@@ -23,7 +23,10 @@ import org.wink.module.http.scg.mapper.ScJsonMapper;
 
 import java.util.List;
 
-
+/**
+ * @author Mikita Torap
+ * @since 0.0.1
+ */
 @RestController
 @RequestMapping("/element")
 public class ScElementController {

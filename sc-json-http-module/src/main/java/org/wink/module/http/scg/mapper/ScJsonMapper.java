@@ -4,6 +4,7 @@ import org.ostis.scmemory.model.element.edge.EdgeType;
 import org.ostis.scmemory.model.element.link.LinkType;
 import org.ostis.scmemory.model.element.node.NodeType;
 import org.ostis.scmemory.websocketmemory.util.internal.ScTypesMap;
+import org.wink.engine.model.graph.impl.DefaultWinkGraph;
 import org.wink.engine.model.graph.impl.WinkEdge;
 import org.wink.engine.model.graph.impl.WinkLink;
 import org.wink.engine.model.graph.impl.WinkLinkFloat;
@@ -11,25 +12,31 @@ import org.wink.engine.model.graph.impl.WinkLinkInteger;
 import org.wink.engine.model.graph.impl.WinkLinkString;
 import org.wink.engine.model.graph.impl.WinkNode;
 import org.wink.engine.model.graph.interfaces.WinkElement;
+import org.wink.engine.model.graph.interfaces.WinkGraph;
+import org.wink.engine.model.graph.interfaces.WinkGraphHeader;
 import org.wink.module.http.scg.dto.ScElementDto;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Mikita Torap
+ * @since 0.0.1
+ */
 public class ScJsonMapper {
-    
-    private final Map<Integer, Object> scElementTypes = ScTypesMap.INSTANCE.getTypes();;
 
     private static final String NODE = "node";
+    ;
     private static final String EDGE = "edge";
     private static final String LINK = "link";
-
     private static final String UNKNOWN_WINK_LINK_CONTENT_TYPE = "Unknown wink link content type encountered. " +
             "Wink link cannot be created!";
+    private final Map<Integer, Object> scElementTypes = ScTypesMap.INSTANCE.getTypes();
 
-    public List<WinkElement> map(List<ScElementDto> scElements) {
+    public WinkGraph map(List<ScElementDto> scElements, WinkGraphHeader header) {
         List<WinkElement> winkElements = new ArrayList<>();
+        WinkGraph resultGraph = new DefaultWinkGraph(header);
         for (ScElementDto scElement : scElements) {
             String element = scElement.getElement();
             Integer type = scElement.getType();
@@ -47,16 +54,17 @@ public class ScJsonMapper {
                 case EDGE -> {
                     WinkEdge winkEdge = getWinkEdge(scElement, winkElements, type);
                     winkElements.add(winkEdge);
+                    resultGraph.addEdge(winkEdge);
                 }
             }
         }
 
-        return winkElements;
+        return resultGraph;
     }
-    
+
     private WinkNode getWinkNode(Integer type) {
         NodeType nodeType = (NodeType) scElementTypes.get(type);
-        return new WinkNode(nodeType); 
+        return new WinkNode(nodeType);
     }
 
     private WinkLink getWinkLink(Integer type, Object content) {

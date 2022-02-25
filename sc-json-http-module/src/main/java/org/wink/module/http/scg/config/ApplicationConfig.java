@@ -11,6 +11,11 @@ import org.wink.engine.analyser.autocompleter.DefaultAutocompleter;
 
 import java.util.ArrayList;
 
+
+/**
+ * @author Mikita Torap
+ * @since 0.0.1
+ */
 @Configuration
 @EnableWebMvc
 public class ApplicationConfig implements WebMvcConfigurer {
