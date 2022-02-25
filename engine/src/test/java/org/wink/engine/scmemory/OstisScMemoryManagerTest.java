@@ -22,6 +22,10 @@ import org.wink.engine.model.graph.interfaces.WinkGraph;
 
 import java.net.URI;
 
+/**
+ * @author artrayme
+ * @since 0.0.1
+ */
 class OstisScMemoryManagerTest {
     private OstisScMemoryManager manager;
 
