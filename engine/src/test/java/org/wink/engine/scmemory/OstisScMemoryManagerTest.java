@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.ostis.api.context.DefaultScContext;
 import org.ostis.scmemory.model.ScMemory;
 import org.ostis.scmemory.model.element.edge.EdgeType;
+import org.ostis.scmemory.model.element.link.LinkType;
 import org.ostis.scmemory.model.element.node.NodeType;
 import org.ostis.scmemory.model.exception.ScMemoryException;
 import org.ostis.scmemory.websocketmemory.memory.SyncOstisScMemory;
@@ -17,10 +18,15 @@ import org.wink.engine.exceptions.GraphWithThisNameAlreadyUploadedException;
 import org.wink.engine.model.graph.impl.DefaultWinkGraph;
 import org.wink.engine.model.graph.impl.DefaultWinkGraphHeader;
 import org.wink.engine.model.graph.impl.WinkEdge;
+import org.wink.engine.model.graph.impl.WinkLinkFloat;
+import org.wink.engine.model.graph.impl.WinkLinkInteger;
+import org.wink.engine.model.graph.impl.WinkLinkString;
 import org.wink.engine.model.graph.impl.WinkNode;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
 
 import java.net.URI;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author artrayme
@@ -62,5 +68,59 @@ class OstisScMemoryManagerTest {
         manager.upload(name1, graph1);
         manager.upload(name2, graph2);
         manager.unloadAll();
+    }
+
+
+    @Test
+    void tripletWithIntegerLinkUploadingAndUnloading() throws CannotCreateEdgeException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, ScMemoryException, GraphDoesntExistException {
+        String name = "some_graph_1";
+        WinkGraph graph = new DefaultWinkGraph(new DefaultWinkGraphHeader(name, ""));
+        graph.addEdge(new WinkEdge (EdgeType.ACCESS, new WinkLinkInteger(LinkType.LINK, 123), new WinkNode(NodeType.NODE)))
+        ;
+        manager.upload(name, graph);
+        manager.unload(name);
+    }
+
+    @Test
+    void tripletWithStringLinkUploadingAndUnloading() throws CannotCreateEdgeException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, ScMemoryException, GraphDoesntExistException {
+        String name = "some_graph_1";
+        WinkGraph graph = new DefaultWinkGraph(new DefaultWinkGraphHeader(name, ""));
+        graph.addEdge(new WinkEdge(EdgeType.ACCESS, new WinkLinkString(LinkType.LINK, "some_link"), new WinkNode(NodeType.NODE)));
+        manager.upload(name, graph);
+        manager.unload(name);
+    }
+
+    @Test
+    void tripletWithFloatLinkUploadingAndUnloading() throws CannotCreateEdgeException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, ScMemoryException, GraphDoesntExistException {
+        String name = "some_graph_1";
+        WinkGraph graph = new DefaultWinkGraph(new DefaultWinkGraphHeader(name, ""));
+        graph.addEdge(new WinkEdge(EdgeType.ACCESS, new WinkLinkFloat(LinkType.LINK, 12.3f), new WinkNode(NodeType.NODE)));
+        manager.upload(name, graph);
+        manager.unload(name);
+    }
+
+    @Test
+    void checkGraphDuplicateException() throws CannotCreateEdgeException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, ScMemoryException, GraphDoesntExistException {
+        String name = "some_graph_1";
+        WinkGraph graph = new DefaultWinkGraph(new DefaultWinkGraphHeader(name, ""));
+        graph.addEdge(new WinkEdge(EdgeType.ACCESS, new WinkLinkFloat(LinkType.LINK, 12.3f), new WinkNode(NodeType.NODE)));
+        manager.upload(name, graph);
+        assertThrows(GraphWithThisNameAlreadyUploadedException.class, () -> {
+            String duplicateName = "some_graph_1";
+            WinkGraph duplicateGraph = new DefaultWinkGraph(new DefaultWinkGraphHeader(name, ""));
+            graph.addEdge(new WinkEdge(EdgeType.ACCESS, new WinkLinkFloat(LinkType.LINK, 12.3f), new WinkNode(NodeType.NODE)));
+            manager.upload(name, graph);
+        });
+        manager.unload(name);
+    }
+
+    @Test
+    void checkGraphUnloadingException() throws CannotCreateEdgeException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, ScMemoryException, GraphDoesntExistException {
+        String name = "some_graph_1";
+        WinkGraph graph = new DefaultWinkGraph(new DefaultWinkGraphHeader(name, ""));
+        graph.addEdge(new WinkEdge(EdgeType.ACCESS, new WinkLinkFloat(LinkType.LINK, 12.3f), new WinkNode(NodeType.NODE)));
+        assertThrows(GraphDoesntExistException.class, () -> {
+            manager.unload(name);
+        });
     }
 }
