@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
 }
 
 group 'org.osits'
@@ -21,4 +22,14 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+jacocoTestReport{
+    dependsOn test
+    reports {
+        csv.enabled true
+        xml.required = true
+        csv.required = true
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
 }
