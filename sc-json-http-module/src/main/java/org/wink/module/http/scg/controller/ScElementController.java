@@ -32,7 +32,6 @@ import java.util.List;
 public class ScElementController {
 
     private final ScJsonMapper scJsonMapper;
-    private final Autocompleter autocompleter;
 
     //    ToDo Mikita
     //    Please, inject this dependency correctly.
@@ -41,6 +40,11 @@ public class ScElementController {
     //    I think, the best way to create this class is to read URI of the OSTIS from the config file.
     //    Default URI -- ws://localhost:8090/ws_json.
     //    You can find an example here -- OstisScMemoryManagerTest.
+    //
+    //    Also, to create a DefaultAutocompleter dependency,
+    //    a list of identifiers must be passed to the constructor.
+    //    This list can be obtained using the utility class org.ostis.scmemory.websocketmemory.util.api.IdtfUtils.
+    private final Autocompleter autocompleter;
     private final ScMemoryManager manager;
 
     @Autowired
