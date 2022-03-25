@@ -1,5 +1,7 @@
 package org.wink.engine.file.worker;
 
+import org.wink.engine.Config;
+
 import java.io.*;
 import java.util.*;
 
@@ -12,13 +14,8 @@ public class DefaultFileWorker implements FileWorker {
     private static final Set<String> EXTENSIONS = new HashSet<>(Arrays.asList("scs", "gwf"));
     private String pathToKB;
 
-    public DefaultFileWorker(String pathToWinkConf) throws IOException {
-        this.pathToWinkConf = pathToWinkConf;
-        InputStream input = new FileInputStream(this.pathToWinkConf);
-        Properties prop = new Properties();
-        prop.load(input);
-        pathToKB = prop.getProperty("kb.path");
-        input.close();
+    public DefaultFileWorker() throws IOException {
+        pathToKB = Config.getProperty("kb.path");
     }
 
     @Override
@@ -29,9 +26,10 @@ public class DefaultFileWorker implements FileWorker {
     }
 
     @Override
-    public byte[] read(String fileName) throws IOException {
+    public ByteArrayOutputStream read(String fileName) throws IOException {
         FileInputStream fis = new FileInputStream(pathToKB + "/" + fileName);
-        byte[] toReturn = fis.readAllBytes();
+        ByteArrayOutputStream toReturn = new ByteArrayOutputStream();
+        toReturn.write(fis.readAllBytes());
         fis.close();
         return toReturn;
     }

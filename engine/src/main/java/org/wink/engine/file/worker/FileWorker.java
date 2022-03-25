@@ -11,7 +11,7 @@ import java.util.List;
 public interface FileWorker {
     void write(String fileName, ByteArrayOutputStream outputStream) throws IOException;
 
-    byte[] read(String fileName) throws IOException;
+    ByteArrayOutputStream read(String fileName) throws IOException;
 
     List<String> getFilesList();
 }

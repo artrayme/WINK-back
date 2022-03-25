@@ -2,6 +2,7 @@ package org.wink.engine.file.worker;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.wink.engine.Config;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +23,8 @@ public class FileWorkerTest {
     @BeforeAll
     public static void initFileWorker() throws FileNotFoundException {
         try {
-            tested = new DefaultFileWorker("src/test/resources/file.worker/wink.conf");
+            Config.init("src/test/resources/wink.conf");
+            tested = new DefaultFileWorker();
         } catch (IOException e) {
             throw new FileNotFoundException("wink.conf not found");
         }
@@ -34,7 +36,7 @@ public class FileWorkerTest {
         ByteArrayOutputStream temp = new ByteArrayOutputStream();
         temp.write(tested_bytes);
         tested.write("read_file", temp);
-        assertArrayEquals(tested_bytes, tested.read("read_file"));
+        assertArrayEquals(tested_bytes, tested.read("read_file").toByteArray());
     }
 
     @Test
