@@ -16,7 +16,7 @@ dependencies {
     implementation project(':engine')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    implementation 'org.ostis:jmantic:0.6.1'
+    implementation 'io.github.artrayme:jmantic:0.6.2'
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.6.3'
 }
