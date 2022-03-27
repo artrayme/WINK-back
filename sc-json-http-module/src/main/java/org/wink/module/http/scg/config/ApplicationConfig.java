@@ -1,5 +1,6 @@
 package org.wink.module.http.scg.config;
 
+import org.ostis.api.context.DefaultScContext;
 import org.ostis.scmemory.model.ScMemory;
 import org.ostis.scmemory.websocketmemory.memory.SyncOstisScMemory;
 import org.ostis.scmemory.websocketmemory.util.api.IdtfUtils;
@@ -12,12 +13,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.wink.engine.analyser.autocompleter.Autocompleter;
 import org.wink.engine.analyser.autocompleter.DefaultAutocompleter;
+import org.wink.engine.scmemory.OstisScMemoryManager;
+import org.wink.engine.scmemory.ScMemoryManager;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 
 /**
@@ -39,9 +38,11 @@ public class ApplicationConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public ScMemory scMemory() throws URISyntaxException {
+    public ScMemory scMemory() throws Exception {
         URI uri = new URI(environment.getProperty(URI));
-        return new SyncOstisScMemory(uri);
+        ScMemory scMemory = new SyncOstisScMemory(uri);
+        scMemory.open();
+        return scMemory;
     }
 
     @Bean
@@ -49,5 +50,15 @@ public class ApplicationConfig implements WebMvcConfigurer {
         SyncOstisScMemory syncOstisScMemory = (SyncOstisScMemory) scMemory;
         Iterable<String> identifiers = IdtfUtils.getAllIdtfFast(syncOstisScMemory);
         return new DefaultAutocompleter(identifiers);
+    }
+
+    @Bean
+    public ScMemoryManager scMemoryManager(DefaultScContext defaultScContext) throws Exception {
+        return new OstisScMemoryManager(defaultScContext);
+    }
+
+    @Bean
+    public DefaultScContext defaultScContext(ScMemory scMemory) {
+        return new DefaultScContext(scMemory);
     }
 }

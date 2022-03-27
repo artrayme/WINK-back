@@ -10,16 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.wink.engine.analyser.autocompleter.Autocompleter;
-import org.wink.engine.exceptions.CannotCreateEdgeException;
-import org.wink.engine.exceptions.CannotCreateLinkException;
-import org.wink.engine.exceptions.CannotCreateNodeException;
-import org.wink.engine.exceptions.GraphWithThisNameAlreadyUploadedException;
 import org.wink.engine.model.graph.impl.DefaultWinkGraphHeader;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
 import org.wink.engine.scmemory.ScMemoryManager;
 import org.wink.module.http.scg.dto.AutocompletionDto;
 import org.wink.module.http.scg.dto.ExceptionResponseDto;
-import org.wink.module.http.scg.dto.ScElementDto;
 import org.wink.module.http.scg.dto.WinkGraphDto;
 import org.wink.module.http.scg.mapper.ScJsonMapper;
 

@@ -13,12 +13,18 @@ repositories {
 }
 
 dependencies {
-    implementation project(':engine')
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     implementation 'io.github.artrayme:jmantic:0.6.2'
 
+    implementation project(':engine')
+
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.6.3'
+
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-test', version: '2.6.3'
+    testImplementation group: 'org.springframework', name: 'spring-test', version: '5.3.17'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.22.0'
+    testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.10.5'
 }
 
 test {
