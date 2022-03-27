@@ -18,7 +18,9 @@ import org.wink.engine.model.graph.impl.DefaultWinkGraphHeader;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
 import org.wink.engine.scmemory.ScMemoryManager;
 import org.wink.module.http.scg.dto.AutocompletionDto;
+import org.wink.module.http.scg.dto.ExceptionResponseDto;
 import org.wink.module.http.scg.dto.ScElementDto;
+import org.wink.module.http.scg.dto.WinkGraphDto;
 import org.wink.module.http.scg.mapper.ScJsonMapper;
 
 import java.util.List;
@@ -32,20 +34,11 @@ import java.util.List;
 public class ScElementController {
 
     private final ScJsonMapper scJsonMapper;
-
-    //    ToDo Mikita
-    //    Please, inject this dependency correctly.
-    //    @artrayme just added it.
-    //    At now OstisScMemoryManager implementation should be injected.
-    //    I think, the best way to create this class is to read URI of the OSTIS from the config file.
-    //    Default URI -- ws://localhost:8090/ws_json.
-    //    You can find an example here -- OstisScMemoryManagerTest.
-    //
-    //    Also, to create a DefaultAutocompleter dependency,
-    //    a list of identifiers must be passed to the constructor.
-    //    This list can be obtained using the utility class org.ostis.scmemory.websocketmemory.util.api.IdtfUtils.
     private final Autocompleter autocompleter;
     private final ScMemoryManager manager;
+
+    private static final String SC_MEMORY_EXCEPTION = "The request couldn't be processed due to the problems with ScMemory";
+    private static final int INTERNAL_SERVER_ERROR_CODE = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
     @Autowired
     public ScElementController(ScJsonMapper scJsonMapper, Autocompleter autocompleter, ScMemoryManager manager) {
@@ -55,30 +48,15 @@ public class ScElementController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(List<ScElementDto> scElements) {
-        WinkGraph graph = scJsonMapper.map(scElements, new DefaultWinkGraphHeader("NOT_SPECIFIED", "NOT_SPECIFIED"));
+    public ResponseEntity<?> save(@RequestBody WinkGraphDto winkGraphDto) {
+        WinkGraph graph = scJsonMapper.map(winkGraphDto.getScElements(),
+                new DefaultWinkGraphHeader(winkGraphDto.getFilename(), winkGraphDto.getNativeFormat()));
 
-        //        ToDo Mikita
-        //        1) Graph can be loaded only with a unique name.
-        //        For example, file path.
-        //        And this name can be passed in the request (with List of dto).
-        //
-        //        2) It is better to return error explanation,
-        //        because is not difficult for realisation but very useful for user.
-        //        Please, try to return normal response according to caught exception (in blocks bellow).
-        //
         try {
-            manager.upload("TODO_unique_name", graph);
+            manager.upload(winkGraphDto.getFilename(), graph);
         } catch (ScMemoryException e) {
-            e.printStackTrace();
-        } catch (GraphWithThisNameAlreadyUploadedException e) {
-            e.printStackTrace();
-        } catch (CannotCreateNodeException e) {
-            e.printStackTrace();
-        } catch (CannotCreateLinkException e) {
-            e.printStackTrace();
-        } catch (CannotCreateEdgeException e) {
-            e.printStackTrace();
+            ExceptionResponseDto exceptionResponse = new ExceptionResponseDto(SC_MEMORY_EXCEPTION, INTERNAL_SERVER_ERROR_CODE);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

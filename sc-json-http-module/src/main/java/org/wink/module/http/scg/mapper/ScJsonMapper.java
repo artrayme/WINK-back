@@ -4,6 +4,7 @@ import org.ostis.scmemory.model.element.edge.EdgeType;
 import org.ostis.scmemory.model.element.link.LinkType;
 import org.ostis.scmemory.model.element.node.NodeType;
 import org.ostis.scmemory.websocketmemory.util.internal.ScTypesMap;
+import org.springframework.stereotype.Component;
 import org.wink.engine.model.graph.impl.DefaultWinkGraph;
 import org.wink.engine.model.graph.impl.WinkEdge;
 import org.wink.engine.model.graph.impl.WinkLink;
@@ -24,6 +25,7 @@ import java.util.Map;
  * @author Mikita Torap
  * @since 0.0.1
  */
+@Component
 public class ScJsonMapper {
 
     private static final String NODE = "node";
