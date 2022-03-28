@@ -29,11 +29,11 @@ import java.util.Map;
 public class ScJsonMapper {
 
     private static final String NODE = "node";
-    ;
     private static final String EDGE = "edge";
     private static final String LINK = "link";
     private static final String UNKNOWN_WINK_LINK_CONTENT_TYPE = "Unknown wink link content type encountered. " +
             "Wink link cannot be created!";
+    private static final String UNKNOWN_ELEMENT = "Unknown element encountered. Wink element cannot be created!";
     private final Map<Integer, Object> scElementTypes = ScTypesMap.INSTANCE.getTypes();
 
     public WinkGraph map(List<ScElementDto> scElements, WinkGraphHeader header) {
@@ -58,6 +58,7 @@ public class ScJsonMapper {
                     winkElements.add(winkEdge);
                     resultGraph.addEdge(winkEdge);
                 }
+                default -> throw new IllegalArgumentException(UNKNOWN_ELEMENT);
             }
         }
 

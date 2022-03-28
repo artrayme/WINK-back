@@ -7,6 +7,7 @@ import org.wink.engine.model.graph.interfaces.WinkGraphHeader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author artrayme
@@ -33,5 +34,22 @@ public class DefaultWinkGraph implements WinkGraph {
     @Override
     public List<WinkEdge> getEdges() {
         return Collections.unmodifiableList(edges);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DefaultWinkGraph that = (DefaultWinkGraph) o;
+        return header.equals(that.header) && edges.equals(that.edges);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(header, edges);
     }
 }
