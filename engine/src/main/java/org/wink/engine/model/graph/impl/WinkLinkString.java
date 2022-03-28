@@ -4,6 +4,8 @@ import org.ostis.scmemory.model.element.link.LinkContentType;
 import org.ostis.scmemory.model.element.link.LinkType;
 import org.wink.engine.model.graph.util.WinkElementIdGenerator;
 
+import java.util.Objects;
+
 /**
  * @author artrayme
  * @since 0.0.1
@@ -29,4 +31,20 @@ public class WinkLinkString extends WinkLink {
         return content;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        WinkLinkString that = (WinkLinkString) o;
+        return content.equals(that.content) && super.getType().equals(that.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content);
+    }
 }

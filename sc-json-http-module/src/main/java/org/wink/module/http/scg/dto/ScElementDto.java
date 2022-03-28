@@ -16,6 +16,17 @@ public class ScElementDto {
     public ScElementDto() {
     }
 
+    public ScElementDto(String element, Integer type) {
+        this.element = element;
+        this.type = type;
+    }
+
+    public ScElementDto(String element, Integer type, Object content) {
+        this.element = element;
+        this.type = type;
+        this.content = content;
+    }
+
     public String getElement() {
         return element;
     }

@@ -4,6 +4,8 @@ import org.ostis.scmemory.model.element.edge.EdgeType;
 import org.wink.engine.model.graph.interfaces.WinkElement;
 import org.wink.engine.model.graph.util.WinkElementIdGenerator;
 
+import java.util.Objects;
+
 /**
  * @author artrayme
  * @since 0.0.1
@@ -40,5 +42,22 @@ public class WinkEdge implements WinkElement {
     @Override
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        WinkEdge winkEdge = (WinkEdge) o;
+        return type == winkEdge.type && source.equals(winkEdge.source) && target.equals(winkEdge.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, source, target);
     }
 }
