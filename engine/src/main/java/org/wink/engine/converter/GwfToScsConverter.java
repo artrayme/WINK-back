@@ -1,20 +1,21 @@
 package org.wink.engine.converter;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * @author Diana
+ * @since 0.0.1
+ */
 public class GwfToScsConverter {
-    public static void main(String[] args) {
-        convertToScs("");
-    }
-
-    public static String convertToScs(String gwfText) {
+    public static String convertToScs(String gwfText) throws IOException {
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream("temp_file.gwf"), StandardCharsets.UTF_8))) {
+            writer.write(gwfText);
+        }
         try {
             Process process;
-            process = Runtime.getRuntime().exec(new String[]{"python3", "test.py", "arg1", "arg2"});
+            process = Runtime.getRuntime().exec(new String[]{"python3", "converter.py", "arg1", "arg2"});
             InputStream stdout = process.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, StandardCharsets.UTF_8));
             String line;

@@ -64,9 +64,4 @@ public class ScElementController {
         return new ResponseEntity<>(autocompletionResult, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<?> convertGwfToScs(@RequestBody GwfFileDto gwfFileDto){
-        var result = GwfToScsConverter.convertToScs(gwfFileDto.getGwfText());
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
 }
