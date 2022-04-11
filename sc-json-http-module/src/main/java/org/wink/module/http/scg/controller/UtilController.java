@@ -16,7 +16,7 @@ import java.io.IOException;
  * @since 0.0.1
  */
 @RestController
-@RequestMapping("/element")
+@RequestMapping("/util")
 public class UtilController {
 
     @PostMapping
