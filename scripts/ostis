@@ -1,0 +1,87 @@
+#!/bin/bash
+
+make_all()
+{
+  cd /ostis/sc-machine/scripts
+  ./make_all.sh
+}
+
+build_kb()
+{
+  cd /ostis/scripts
+  ./build_kb.sh
+}
+
+sctp()
+{
+  cd /ostis/scripts
+  ./run_sctp.sh &
+}
+
+sc_web()
+{
+  cd /ostis/scripts
+  echo "\n\e[1;32mStarting the old sc-web on http://localhost:8000\e[0m\n"
+  ./run_scweb.sh &
+}
+
+compile()
+{
+  cd /ostis/problem-solver/cxx
+  cmake -B build
+  make -C build
+}
+
+help()
+{
+  cat << EOM
+This is a tool for starting up OSTIS system.
+USAGE:
+  ./ostis [OPTIONS]
+OPTIONS:
+  --help -h             Print help message
+  --all -a              Run all services
+  --sc-machine --scm    Rebuild sc-machine
+  --build_kb --kb       Rebuild kb
+  --sc-web --web        Run sc-web only
+  --sctp                Run sctp only
+  --compile -c          Compile and run specified program. Usage: --compile <executable name>
+EOM
+}
+
+while [ $# -ne 0 ]
+do
+  case "$1" in
+    --help | -h)
+      help
+      exit 0
+      ;;
+    --all | -a)
+      build_kb
+      sctp
+      sc_web
+      ;;
+    --sc-machine | --scm)
+      make_all
+      ;;
+    --build_kb | --kb)
+      build_kb
+      ;;
+    --sc-web | --web)
+      sc_web
+      ;;
+    --sctp)
+      sctp
+      ;;
+    --compile | -c)
+      build_kb
+      compile
+      /ostis/sc-machine/bin/$2
+      ;;
+    esac
+    shift
+done
+
+wait
+
+exit
