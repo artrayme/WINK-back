@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.wink.engine.analyser.autocompleter.Autocompleter;
+import org.wink.engine.converter.GwfToScsConverter;
 import org.wink.engine.model.graph.impl.DefaultWinkGraphHeader;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
 import org.wink.engine.scmemory.ScMemoryManager;
 import org.wink.module.http.scg.dto.AutocompletionDto;
 import org.wink.module.http.scg.dto.ExceptionResponseDto;
+import org.wink.module.http.scg.dto.GwfFileDto;
 import org.wink.module.http.scg.dto.WinkGraphDto;
 import org.wink.module.http.scg.mapper.ScJsonMapper;
 
@@ -60,5 +62,11 @@ public class ScElementController {
     public ResponseEntity<?> autocomplete(@RequestBody AutocompletionDto autocompletionDto) {
         List<String> autocompletionResult = autocompleter.search(autocompletionDto.getPart(), autocompletionDto.getLimit());
         return new ResponseEntity<>(autocompletionResult, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> convertGwfToScs(@RequestBody GwfFileDto gwfFileDto){
+        var result = GwfToScsConverter.convertToScs(gwfFileDto.getGwfText());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
