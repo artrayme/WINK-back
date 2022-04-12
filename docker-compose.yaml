@@ -1,15 +1,19 @@
 version: "3.8"
 services:
   ostis:
-    image: artrayme/test_ostis:0.6.0
-    restart: unless-stopped
+#    image: artrayme/test_ostis:0.6.0
+    build:
+      dockerfile: ostis.Dockerfile
     ports:
       - "8000:8000"
       - "8090:8090"
+      - "55770:55770"
   app:
     depends_on:
       - ostis
-    image: artrayme/wink-back:0.6.0
+#    image: artrayme/wink-back:0.0.1
+    build:
+      dockerfile: wink-back.Dockerfile
     restart: on-failure
     ports:
       - "8080:8080"
