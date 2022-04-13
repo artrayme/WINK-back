@@ -4,6 +4,7 @@ services:
 #    image: artrayme/test_ostis:0.6.0
     build:
       dockerfile: ostis.Dockerfile
+      context: ./
     ports:
       - "8000:8000"
       - "8090:8090"
@@ -14,6 +15,7 @@ services:
 #    image: artrayme/wink-back:0.0.1
     build:
       dockerfile: wink-back.Dockerfile
+      context: ./
     restart: on-failure
     ports:
       - "8080:8080"
