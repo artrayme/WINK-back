@@ -1,7 +1,6 @@
 version: "3.8"
 services:
   ostis:
-#    image: artrayme/test_ostis:0.6.0
     build:
       dockerfile: ostis.Dockerfile
       context: ./
@@ -9,17 +8,18 @@ services:
       - "8000:8000"
       - "8090:8090"
       - "55770:55770"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 50
   app:
     depends_on:
-      - ostis
-#    image: artrayme/wink-back:0.0.1
+      ostis:
+        condition: service_healthy
     build:
       dockerfile: wink-back.Dockerfile
       context: ./
     restart: on-failure
     ports:
       - "8080:8080"
-    stdin_open: true
-    tty: true
-volumes:
-  db:

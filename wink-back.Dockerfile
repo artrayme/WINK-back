@@ -1,6 +1,10 @@
 FROM gradle:7.3.0-jdk17-alpine
 
 VOLUME /tmp
-COPY sc-json-http-module/build/libs/sc-json-http-module-0.0.1.jar app.jar
-ENTRYPOINT ["java","-jar","app.jar"]
+COPY engine engine
+COPY sc-json-http-module sc-json-http-module
+COPY settings.gradle settings.gradle
+
+WORKDIR sc-json-http-module
+ENTRYPOINT ["gradle","bootRun"]
 EXPOSE 8080
