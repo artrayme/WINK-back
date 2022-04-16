@@ -20,6 +20,10 @@ services:
     build:
       dockerfile: wink-back.Dockerfile
       context: ./
+      args:
+        - "--no-cache"
     restart: on-failure
+    environment:
+      - "uri=ws://ostis:8090/ws_json"
     ports:
       - "8080:8080"
