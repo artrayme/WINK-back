@@ -2,7 +2,10 @@ package org.wink.engine.scmemory;
 
 import org.ostis.api.context.DefaultScContext;
 import org.ostis.scmemory.model.element.ScElement;
+import org.ostis.scmemory.model.element.edge.EdgeType;
 import org.ostis.scmemory.model.element.edge.ScEdge;
+import org.ostis.scmemory.model.element.link.ScLink;
+import org.ostis.scmemory.model.element.node.ScNode;
 import org.ostis.scmemory.model.exception.ScMemoryException;
 import org.wink.engine.exceptions.CannotCreateEdgeException;
 import org.wink.engine.exceptions.CannotCreateLinkException;
@@ -27,10 +30,13 @@ import java.util.stream.Stream;
 
 public class OstisScMemoryManager implements ScMemoryManager {
     private final DefaultScContext context;
+    private final String NREL_MAIN_IDTF = "nrel_main_idtf";
+    private final ScNode NREL_MAIN_IDTF_NODE;
     private final Map<String, List<? extends ScEdge>> loaded = new HashMap<>();
 
     public OstisScMemoryManager(DefaultScContext context) throws Exception {
         this.context = context;
+        NREL_MAIN_IDTF_NODE = context.findKeynode(NREL_MAIN_IDTF).get();
     }
 
     @Override
@@ -70,9 +76,14 @@ public class OstisScMemoryManager implements ScMemoryManager {
         List<ScEdge> edges = new ArrayList<>();
         for (WinkEdge edge : graph.getEdges()) {
             try {
-                ScEdge resultEdge = context.createEdge(edge.getType(), winkToSc.get(edge.getSource()), winkToSc.get(edge.getTarget()));
+                ScElement source = winkToSc.get(edge.getSource());
+                ScElement target = winkToSc.get(edge.getTarget());
+                ScEdge resultEdge = context.createEdge(edge.getType(), source, target);
                 edges.add(resultEdge);
                 winkToSc.put(edge, resultEdge);
+                if (source instanceof ScLink || target instanceof ScLink) {
+                    context.createEdge(EdgeType.ACCESS, NREL_MAIN_IDTF_NODE, resultEdge);
+                }
             } catch (ScMemoryException e) {
                 throw new CannotCreateEdgeException(e);
             }
