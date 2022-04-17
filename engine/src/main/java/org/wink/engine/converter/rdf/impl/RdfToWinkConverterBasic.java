@@ -15,7 +15,7 @@ import org.wink.engine.model.graph.interfaces.WinkGraphHeader;
 
 import java.util.HashMap;
 
-public class RdfToWinkConverterImpl implements RdfToWinkConverter {
+public class RdfToWinkConverterBasic implements RdfToWinkConverter {
     private static final String UTF8_ENCODING = "UTF-8";
     private static final String RDF_FORMAT = "RDF/XML";
 

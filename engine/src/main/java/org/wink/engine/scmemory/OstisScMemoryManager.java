@@ -22,7 +22,6 @@ import org.wink.engine.model.graph.interfaces.WinkElement;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class OstisScMemoryManager implements ScMemoryManager {
@@ -53,8 +52,11 @@ public class OstisScMemoryManager implements ScMemoryManager {
         //      each method call creates and sends a small query to the sc-machine.
         //      Is better to aggregate nodes and links in one query (createNodes and createLinks methods).
         //      But this problems has minor priority cause has effect only for big graphs (100+ nodes).
-        Set<WinkElement> elements = graph.getEdges().stream().flatMap(e -> Stream.of(e.getSource(), e.getTarget())).collect(Collectors.toSet());
+        List<WinkElement> elements = graph.getEdges().stream().flatMap(e -> Stream.of(e.getSource(), e.getTarget())).toList();
         for (WinkElement element : elements) {
+            if (winkToSc.containsKey(element)) {
+                continue;
+            }
             if (element instanceof WinkNode node) {
                 try {
                     winkToSc.put(node, context.createNode(node.getType()));
