@@ -1,24 +1,39 @@
 package org.wink.engine.converter.rdf.impl;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.ostis.api.context.DefaultScContext;
+import org.ostis.scmemory.model.ScMemory;
 import org.ostis.scmemory.model.element.edge.EdgeType;
 import org.ostis.scmemory.model.element.link.LinkType;
 import org.ostis.scmemory.model.element.node.NodeType;
+import org.ostis.scmemory.model.exception.ScMemoryException;
+import org.ostis.scmemory.websocketmemory.memory.SyncOstisScMemory;
 import org.wink.engine.converter.rdf.RdfToWinkConverter;
 import org.wink.engine.model.graph.impl.*;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
+import org.wink.engine.scmemory.OstisScMemoryManager;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RdfToWinkConverterBasicTest {
-    static String rdfContent;
-    static WinkGraph expectedGraph;
+    private static String rdfContent;
+    private static WinkGraph expectedGraph;
+    private static WinkGraph actualGraph;
+    private static String actualGraphName;
+    private static OstisScMemoryManager manager;
 
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws Exception {
+        ScMemory memory = new SyncOstisScMemory(new URI("ws://localhost:8090/ws_json"));
+        DefaultScContext context = new DefaultScContext(memory);
+        memory.open();
+        manager = new OstisScMemoryManager(context);
+
+        actualGraphName = "test";
         rdfContent = """
                 <?xml version="1.0"?>
                                 
@@ -70,10 +85,12 @@ class RdfToWinkConverterBasicTest {
     }
 
     @Test
+    @Order(1)
     void convertRdf() {
         RdfToWinkConverter converter = new RdfToWinkConverterBasic();
 
         WinkGraph graph = converter.convertRdf(rdfContent, "test.rdf");
+        actualGraph = graph;
         List<WinkEdge> edgesActual = graph.getEdges();
         List<WinkEdge> edgesExpected = expectedGraph.getEdges();
         int expectedEdgesCount = expectedGraph.getEdges().size();
@@ -82,5 +99,17 @@ class RdfToWinkConverterBasicTest {
 
         assertEquals(expectedEdgesCount, actualEdgesCount);
         assertTrue(actual);
+    }
+
+    @Test
+    @Order(2)
+    void loadGraphToMemory() {
+        manager.upload(actualGraphName, actualGraph);
+    }
+
+    @Test
+    @Order(3)
+    void unloadGraphFromMemory() throws ScMemoryException {
+        manager.unload(actualGraphName);
     }
 }
