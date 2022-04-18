@@ -8,21 +8,31 @@ import org.ostis.scmemory.model.element.edge.EdgeType;
 import org.ostis.scmemory.model.element.link.LinkType;
 import org.ostis.scmemory.model.element.node.NodeType;
 import org.wink.engine.converter.rdf.RdfToWinkConverter;
+import org.wink.engine.converter.rdf.util.RdfValidator;
+import org.wink.engine.exceptions.RdfParseException;
 import org.wink.engine.model.graph.impl.*;
 import org.wink.engine.model.graph.interfaces.WinkElement;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
 import org.wink.engine.model.graph.interfaces.WinkGraphHeader;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
+/**
+ * @author Mikhail Krautsou
+ * @since 0.0.1
+ */
 public class RdfToWinkConverterBasic implements RdfToWinkConverter {
-    private static final String UTF8_ENCODING = "UTF-8";
-    private static final String RDF_FORMAT = "RDF/XML";
+    public static final String RDF_FORMAT = "RDF/XML";
 
     @Override
-    public WinkGraph convertRdf(String rdfFileContent, String rdfFileName) {
+    public WinkGraph convertRdf(String rdfFileContent, String rdfFileName) throws RdfParseException {
+        if (!RdfValidator.validate(rdfFileContent)) {
+            throw new RdfParseException("incorrect rdf/xml data");
+        }
+
         Model model = ModelFactory.createDefaultModel();
-        model.read(IOUtils.toInputStream(rdfFileContent, UTF8_ENCODING), null);
+        model.read(IOUtils.toInputStream(rdfFileContent, StandardCharsets.UTF_8), null);
 
         WinkGraphHeader graphHeader = new DefaultWinkGraphHeader(rdfFileName, RDF_FORMAT);
         WinkGraph graph = new DefaultWinkGraph(graphHeader);

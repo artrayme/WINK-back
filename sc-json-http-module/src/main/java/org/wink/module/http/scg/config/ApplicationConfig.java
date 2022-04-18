@@ -13,6 +13,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.wink.engine.analyser.autocompleter.Autocompleter;
 import org.wink.engine.analyser.autocompleter.DefaultAutocompleter;
+import org.wink.engine.converter.rdf.RdfToWinkConverter;
+import org.wink.engine.converter.rdf.impl.RdfToWinkConverterBasic;
 import org.wink.engine.scmemory.OstisScMemoryManager;
 import org.wink.engine.scmemory.ScMemoryManager;
 
@@ -60,5 +62,10 @@ public class ApplicationConfig implements WebMvcConfigurer {
     @Bean
     public DefaultScContext defaultScContext(ScMemory scMemory) {
         return new DefaultScContext(scMemory);
+    }
+
+    @Bean
+    public RdfToWinkConverter rdfToWinkConverter() {
+        return new RdfToWinkConverterBasic();
     }
 }
