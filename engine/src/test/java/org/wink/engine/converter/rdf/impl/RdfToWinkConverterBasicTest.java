@@ -9,6 +9,7 @@ import org.ostis.scmemory.model.element.node.NodeType;
 import org.ostis.scmemory.model.exception.ScMemoryException;
 import org.ostis.scmemory.websocketmemory.memory.SyncOstisScMemory;
 import org.wink.engine.converter.rdf.RdfToWinkConverter;
+import org.wink.engine.exceptions.RdfParseException;
 import org.wink.engine.model.graph.impl.*;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
 import org.wink.engine.scmemory.OstisScMemoryManager;
@@ -22,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class RdfToWinkConverterBasicTest {
     private static String rdfContent;
     private static WinkGraph expectedGraph;
-    private static WinkGraph actualGraph;
     private static String actualGraphName;
     private static OstisScMemoryManager manager;
 
@@ -84,13 +84,16 @@ class RdfToWinkConverterBasicTest {
         expectedGraph.addEdge(edgeLinkFirstEdgeCollectionNodeCDNode);
     }
 
+    @AfterAll
+    static void tearDown() throws Exception {
+        manager.getScContext().getMemory().close();
+    }
+
     @Test
-    @Order(1)
-    void convertRdf() {
+    void convertRdf() throws RdfParseException {
         RdfToWinkConverter converter = new RdfToWinkConverterBasic();
 
         WinkGraph graph = converter.convertRdf(rdfContent, "test.rdf");
-        actualGraph = graph;
         List<WinkEdge> edgesActual = graph.getEdges();
         List<WinkEdge> edgesExpected = expectedGraph.getEdges();
         int expectedEdgesCount = expectedGraph.getEdges().size();
@@ -102,13 +105,15 @@ class RdfToWinkConverterBasicTest {
     }
 
     @Test
-    @Order(2)
-    void loadGraphToMemory() {
-        manager.upload(actualGraphName, actualGraph);
+    @Order(1)
+    void loadGraphToMemory() throws RdfParseException {
+        RdfToWinkConverter converter = new RdfToWinkConverterBasic();
+        WinkGraph graph = converter.convertRdf(rdfContent, "test.rdf");
+        manager.upload(actualGraphName, graph);
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     void unloadGraphFromMemory() throws ScMemoryException {
         manager.unload(actualGraphName);
     }
