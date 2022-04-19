@@ -9,11 +9,9 @@ class GWFParser:
     def __init__(self, elements):
         self.elements = elements
 
-    def parse(self, input_path) -> Optional[str]:
+    def parse(self, gwf_str) -> Optional[str]:
         # parse gwf
-        tree = ElementTree.parse(input_path)
-        gwf_root = tree.getroot()
-
+        gwf_root = ElementTree.fromstring(gwf_str)
         static_sector = gwf_root.find("staticSector")
         if static_sector is None:
             return "Can't find `staticSector` tag"
