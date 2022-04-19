@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.wink.engine.converter.GwfToScsConverter;
+import org.wink.engine.exceptions.InvalidGwfException;
 import org.wink.module.http.scg.dto.GwfFileDto;
 
 import java.io.IOException;
@@ -20,14 +21,12 @@ import java.io.IOException;
 public class UtilController {
 
     @PostMapping
-    public ResponseEntity<?> convertGwfToScs(@RequestBody GwfFileDto gwfFileDto){
+    public ResponseEntity<?> convertGwfToScs(@RequestBody GwfFileDto gwfFileDto) {
         try {
             String result = GwfToScsConverter.convertToScs(gwfFileDto.getGwfText());
             return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException | InvalidGwfException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 }

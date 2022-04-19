@@ -1,5 +1,7 @@
 package org.wink.engine.converter;
 
+import org.wink.engine.exceptions.InvalidGwfException;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -10,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 public class GwfToScsConverter {
     private static final String PATH_TO_CONVERTER = "kb_scripts/gwf_to_scs.py";
 
-    public static String convertToScs(String gwfText) throws IOException, InterruptedException {
+    public static String convertToScs(String gwfText) throws IOException, InterruptedException, InvalidGwfException {
 
         Process process;
         process = Runtime.getRuntime().exec(new String[]{"python3", PATH_TO_CONVERTER, gwfText});
@@ -28,6 +30,6 @@ public class GwfToScsConverter {
         if (exit_id == 0) {
             return toReturn.toString();
         } else
-            throw new RuntimeException(toReturn.toString());
+            throw new InvalidGwfException(toReturn.toString());
     }
 }
