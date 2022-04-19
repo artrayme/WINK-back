@@ -3,7 +3,7 @@ services:
   ostis:
     build:
       dockerfile: ostis.Dockerfile
-      context: ./
+      context: .
     ports:
       - "8000:8000"
       - "8090:8090"
@@ -11,15 +11,14 @@ services:
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
       interval: 30s
-      timeout: 10s
-      retries: 50
+      retries: 100
   app:
     depends_on:
       ostis:
         condition: service_healthy
     build:
       dockerfile: wink-back.Dockerfile
-      context: ./
+      context: .
       args:
         - "--no-cache"
     restart: on-failure
