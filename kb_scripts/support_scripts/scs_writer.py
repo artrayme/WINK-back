@@ -187,9 +187,7 @@ class SCsWriter:
     kNrelSystemIdtf = "nrel_system_identifier"
     kNrelMainIdtf = "nrel_main_identifier"
 
-    def __init__(self, output_path):
-        self.output_path = output_path
-
+    def __init__(self):
         self.written_elements = []
         self.errors = []
 
@@ -202,12 +200,7 @@ class SCsWriter:
             self.correct_idtf(buff, el)
 
         self.process_elements(elements, buff, 0)
-
-        file = open(self.output_path, "w")
-        file.write(buff.value)
-        file.close()
-
-        return self.errors
+        return self.errors, buff.value
 
     def process_elements(self, elements, buffer, parent, nested_level=0):
 

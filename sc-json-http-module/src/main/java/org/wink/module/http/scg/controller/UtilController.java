@@ -26,6 +26,8 @@ public class UtilController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
