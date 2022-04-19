@@ -19,17 +19,17 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/triplet")
-public class ScPatternTripletController {
+public class ScPatternTripletController<T> {
 
-    private final ScPatternJsonMapper scPatternJsonMapper;
+    private final ScPatternJsonMapper<T> scPatternJsonMapper;
 
     @Autowired
-    public ScPatternTripletController(ScPatternJsonMapper scPatternJsonMapper) {
+    public ScPatternTripletController(ScPatternJsonMapper<T> scPatternJsonMapper) {
         this.scPatternJsonMapper = scPatternJsonMapper;
     }
 
     @GetMapping
-    public ResponseEntity<?> save(@RequestBody List<ScPatternTripletDto> triplets) {
+    public ResponseEntity<?> save(@RequestBody List<ScPatternTripletDto<T>> triplets) {
         ScPattern scPattern = scPatternJsonMapper.map(triplets);
         return new ResponseEntity<>(HttpStatus.OK);
     }

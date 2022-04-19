@@ -18,14 +18,14 @@ import java.util.List;
  * @since 0.0.1
  */
 @Component
-public class ScPatternJsonMapper {
+public class ScPatternJsonMapper<T> {
 
-    public DefaultWebsocketScPattern map(List<ScPatternTripletDto> tripletsDto) {
+    public DefaultWebsocketScPattern map(List<ScPatternTripletDto<T>> tripletsDto) {
         DefaultWebsocketScPattern websocketScPattern = new DefaultWebsocketScPattern();
-        for (ScPatternTripletDto tripletDto : tripletsDto) {
-            ScPatternTripletElementDto firstElementDto = tripletDto.getFirstElement();
-            ScPatternTripletElementDto secondElementDto = tripletDto.getSecondElement();
-            ScPatternTripletElementDto thirdElementDto = tripletDto.getThirdElement();
+        for (ScPatternTripletDto<T> tripletDto : tripletsDto) {
+            ScPatternTripletElementDto<T> firstElementDto = tripletDto.getFirstElement();
+            ScPatternTripletElementDto<T> secondElementDto = tripletDto.getSecondElement();
+            ScPatternTripletElementDto<T> thirdElementDto = tripletDto.getThirdElement();
 
             ScPatternTriplet triplet = mapToTriplet(firstElementDto, secondElementDto, thirdElementDto);
             websocketScPattern.addElement(triplet);
@@ -34,9 +34,9 @@ public class ScPatternJsonMapper {
         return websocketScPattern;
     }
 
-    private ScPatternTriplet mapToTriplet(ScPatternTripletElementDto firstElementDto,
-                                          ScPatternTripletElementDto secondElementDto,
-                                          ScPatternTripletElementDto thirdElementDto) {
+    private ScPatternTriplet mapToTriplet(ScPatternTripletElementDto<T> firstElementDto,
+                                          ScPatternTripletElementDto<T> secondElementDto,
+                                          ScPatternTripletElementDto<T> thirdElementDto) {
         ScPatternElement firstElement = mapToTripletElement(firstElementDto);
         ScPatternElement secondElement = mapToTripletElement(secondElementDto);
         ScPatternElement thirdElement = mapToTripletElement(thirdElementDto);
@@ -44,8 +44,8 @@ public class ScPatternJsonMapper {
         return new SearchingPatternTriple(firstElement, secondElement, thirdElement);
     }
 
-    private ScPatternElement mapToTripletElement(ScPatternTripletElementDto tripletElementDto) {
-        String type = tripletElementDto.getValue().toString();
+    private ScPatternElement mapToTripletElement(ScPatternTripletElementDto<T> tripletElementDto) {
+        T type = tripletElementDto.getValue();
         String alias = tripletElementDto.getAlias();
         ScAliasedElement scAliasedElement = new AliasPatternElement(alias);
 
