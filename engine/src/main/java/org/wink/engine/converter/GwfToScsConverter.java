@@ -4,32 +4,30 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 /**
- * @author Diana
+ * @author Inejka
  * @since 0.0.1
  */
 public class GwfToScsConverter {
-    public static String convertToScs(String gwfText) throws IOException {
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream("temp_file.gwf"), StandardCharsets.UTF_8))) {
-            writer.write(gwfText);
-        }
-        try {
-            Process process;
-            process = Runtime.getRuntime().exec(new String[]{"python3", "converter.py", "arg1", "arg2"});
-            InputStream stdout = process.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, StandardCharsets.UTF_8));
-            String line;
-            try {
-                while ((line = reader.readLine()) != null) {
-                    System.out.println("stdout: " + line);
-                }
-            } catch (IOException e) {
-                System.out.println("Exception in reading output" + e.toString());
-            }
-        } catch (Exception e) {
-            System.out.println("Exception Raised" + e.toString());
-        }
+    private static final String PATH_TO_CONVERTER = "kb_scripts/gwf_to_scs.py";
 
-        return "";
+    public static String convertToScs(String gwfText) throws IOException, InterruptedException {
+
+        Process process;
+        process = Runtime.getRuntime().exec(new String[]{"python3", PATH_TO_CONVERTER, gwfText});
+        int exit_id = 0;
+        exit_id = process.waitFor();
+        InputStream stdout = process.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, StandardCharsets.UTF_8));
+        String line;
+        StringBuilder toReturn = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            toReturn.append(line).append("\n");
+        }
+        stdout.close();
+        reader.close();
+        if (exit_id == 0) {
+            return toReturn.toString();
+        } else
+            throw new RuntimeException(toReturn.toString());
     }
 }
