@@ -5,10 +5,15 @@ import org.ostis.scmemory.model.ScMemory;
 import org.ostis.scmemory.websocketmemory.memory.SyncOstisScMemory;
 import org.ostis.scmemory.websocketmemory.util.api.IdtfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.wink.engine.analyser.autocompleter.Autocompleter;
@@ -30,9 +35,8 @@ import java.net.URI;
 @PropertySource("classpath:ostis_config.properties")
 public class ApplicationConfig implements WebMvcConfigurer {
 
-    private final Environment environment;
-
     private static final String URI = "uri";
+    private final Environment environment;
 
     @Autowired
     public ApplicationConfig(Environment environment) {
@@ -67,5 +71,30 @@ public class ApplicationConfig implements WebMvcConfigurer {
     @Bean
     public RdfToWinkConverter rdfToWinkConverter() {
         return new RdfToWinkConverterBasic();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**");
+            }
+        };
+    }
+
+    @Bean
+    public FilterRegistrationBean corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:8080");
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(0);
+        return bean;
     }
 }
