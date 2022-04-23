@@ -109,7 +109,7 @@ class RdfToWinkConverterBasicTest {
     void loadGraphToMemory() throws RdfParseException {
         RdfToWinkConverter converter = new RdfToWinkConverterBasic();
         WinkGraph graph = converter.convertRdf(rdfContent, "test.rdf");
-        manager.upload(actualGraphName, graph);
+        manager.uploadContour("test_rdf", graph);
     }
 
     @Test
