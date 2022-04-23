@@ -18,6 +18,7 @@ import org.wink.engine.exceptions.GraphWithThisNameAlreadyUploadedException;
 import org.wink.engine.model.graph.impl.DefaultWinkGraph;
 import org.wink.engine.model.graph.impl.DefaultWinkGraphHeader;
 import org.wink.engine.model.graph.impl.WinkEdge;
+import org.wink.engine.model.graph.impl.WinkIdtfiableWrapper;
 import org.wink.engine.model.graph.impl.WinkLinkFloat;
 import org.wink.engine.model.graph.impl.WinkLinkInteger;
 import org.wink.engine.model.graph.impl.WinkLinkString;
@@ -27,6 +28,7 @@ import org.wink.engine.model.graph.interfaces.WinkGraph;
 import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author artrayme
@@ -58,6 +60,38 @@ class OstisScMemoryManagerTest {
     }
 
     @Test
+    void simpleTripletWithIdentifiableElementsUploadingAndUnloading() throws CannotCreateEdgeException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, ScMemoryException, GraphDoesntExistException {
+        String name = "some_graph_1";
+        WinkGraph graph = new DefaultWinkGraph(new DefaultWinkGraphHeader(name, ""));
+        String my_node_1 = "my_node_1";
+        String my_node_2 = "my_node_2";
+        graph.addEdge(new WinkEdge(1L, EdgeType.ACCESS, new WinkIdtfiableWrapper(new WinkNode(NodeType.NODE), my_node_1), new WinkIdtfiableWrapper(new WinkNode(NodeType.NODE), my_node_2)));
+        manager.upload(name, graph);
+        assertTrue(manager.getScContext().findKeynode(my_node_1).isPresent());
+        assertTrue(manager.getScContext().findKeynode(my_node_2).isPresent());
+        manager.unload(name);
+        assertTrue(manager.getScContext().findKeynode(my_node_1).isEmpty());
+        assertTrue(manager.getScContext().findKeynode(my_node_2).isEmpty());
+    }
+
+    @Test
+    void contourTest() throws CannotCreateEdgeException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, ScMemoryException, GraphDoesntExistException {
+        String name = "some_graph_1";
+        WinkGraph graph = new DefaultWinkGraph(new DefaultWinkGraphHeader(name, ""));
+        String my_node_1 = "my_node_1";
+        String my_node_2 = "my_node_2";
+        graph.addEdge(new WinkEdge(1L, EdgeType.ACCESS, new WinkIdtfiableWrapper(new WinkNode(NodeType.NODE), my_node_1), new WinkIdtfiableWrapper(new WinkNode(NodeType.NODE), my_node_2)));
+        String contourName = manager.uploadContour(name, graph);
+        assertTrue(manager.getScContext().findKeynode(my_node_1).isPresent());
+        assertTrue(manager.getScContext().findKeynode(my_node_2).isPresent());
+        assertTrue(manager.getScContext().findKeynode(contourName).isPresent());
+        manager.unload(name);
+        assertTrue(manager.getScContext().findKeynode(my_node_1).isEmpty());
+        assertTrue(manager.getScContext().findKeynode(my_node_2).isEmpty());
+        assertTrue(manager.getScContext().findKeynode(contourName).isEmpty());
+    }
+
+    @Test
     void unloadAll() throws CannotCreateEdgeException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, ScMemoryException {
         String name1 = "some_graph_1";
         String name2 = "some_graph_2";
@@ -75,7 +109,7 @@ class OstisScMemoryManagerTest {
     void tripletWithIntegerLinkUploadingAndUnloading() throws CannotCreateEdgeException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, ScMemoryException, GraphDoesntExistException {
         String name = "some_graph_1";
         WinkGraph graph = new DefaultWinkGraph(new DefaultWinkGraphHeader(name, ""));
-        graph.addEdge(new WinkEdge (EdgeType.ACCESS, new WinkLinkInteger(LinkType.LINK, 123), new WinkNode(NodeType.NODE)))
+        graph.addEdge(new WinkEdge(EdgeType.ACCESS, new WinkLinkInteger(LinkType.LINK, 123), new WinkNode(NodeType.NODE)))
         ;
         manager.upload(name, graph);
         manager.unload(name);
