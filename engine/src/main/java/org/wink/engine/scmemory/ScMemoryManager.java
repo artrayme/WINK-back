@@ -17,6 +17,8 @@ public interface ScMemoryManager {
 
     void upload(String name, WinkGraph graph) throws ScMemoryException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, CannotCreateEdgeException;
 
+    String uploadContour(String name, WinkGraph graph) throws ScMemoryException, GraphWithThisNameAlreadyUploadedException, CannotCreateNodeException, CannotCreateLinkException, CannotCreateEdgeException;
+
     void unload(String name) throws GraphDoesntExistException, ScMemoryException;
 
     List<String> unloadAll() throws ScMemoryException;
