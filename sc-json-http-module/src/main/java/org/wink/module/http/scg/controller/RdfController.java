@@ -40,7 +40,7 @@ public class RdfController {
         String content = rdfDto.getRdfContent();
         try {
             WinkGraph graph = rdfToWinkConverter.convertRdf(content, fileName);
-            scMemoryManager.upload(fileName, graph);
+            return new ResponseEntity<>(scMemoryManager.uploadContour(fileName, graph), HttpStatus.CREATED);
         } catch (ScMemoryException exception) {
             ExceptionResponseDto exceptionResponse = new ExceptionResponseDto(SC_MEMORY_EXCEPTION, INTERNAL_SERVER_ERROR_CODE);
             return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -48,6 +48,5 @@ public class RdfController {
             ExceptionResponseDto exceptionResponse = new ExceptionResponseDto(exception.getMessage(), BAD_REQUEST_CODE);
             return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

@@ -28,12 +28,11 @@ import java.util.List;
 @RequestMapping("/element")
 public class ScElementController {
 
+    private static final String SC_MEMORY_EXCEPTION = "The request couldn't be processed due to the problems with ScMemory";
+    private static final int INTERNAL_SERVER_ERROR_CODE = HttpStatus.INTERNAL_SERVER_ERROR.value();
     private final ScJsonMapper scJsonMapper;
     private final Autocompleter autocompleter;
     private final ScMemoryManager manager;
-
-    private static final String SC_MEMORY_EXCEPTION = "The request couldn't be processed due to the problems with ScMemory";
-    private static final int INTERNAL_SERVER_ERROR_CODE = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
     @Autowired
     public ScElementController(ScJsonMapper scJsonMapper, Autocompleter autocompleter, ScMemoryManager manager) {
@@ -48,12 +47,11 @@ public class ScElementController {
                 new DefaultWinkGraphHeader(winkGraphDto.getFilename(), winkGraphDto.getNativeFormat()));
 
         try {
-            manager.upload(winkGraphDto.getFilename(), graph);
+            return new ResponseEntity<>(manager.uploadContour(winkGraphDto.getFilename(), graph), HttpStatus.CREATED);
         } catch (ScMemoryException e) {
             ExceptionResponseDto exceptionResponse = new ExceptionResponseDto(SC_MEMORY_EXCEPTION, INTERNAL_SERVER_ERROR_CODE);
             return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping
