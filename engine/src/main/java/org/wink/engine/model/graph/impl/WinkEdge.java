@@ -45,6 +45,11 @@ public class WinkEdge implements WinkElement {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, type, source, target);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -54,10 +59,5 @@ public class WinkEdge implements WinkElement {
         }
         WinkEdge winkEdge = (WinkEdge) o;
         return type == winkEdge.type && source.equals(winkEdge.source) && target.equals(winkEdge.target);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, type, source, target);
     }
 }
