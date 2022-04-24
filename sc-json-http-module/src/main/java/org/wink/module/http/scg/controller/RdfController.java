@@ -15,6 +15,8 @@ import org.wink.engine.scmemory.ScMemoryManager;
 import org.wink.module.http.scg.dto.ExceptionResponseDto;
 import org.wink.module.http.scg.dto.RdfDto;
 
+import java.util.Base64;
+
 /**
  * @author Mikhail Krautsou
  * @since 0.0.1
@@ -37,7 +39,10 @@ public class RdfController {
     @PostMapping
     public ResponseEntity<?> save(@RequestBody RdfDto rdfDto) {
         String fileName = rdfDto.getRdfFileName();
-        String content = rdfDto.getRdfContent();
+        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] decodedBytes = decoder.decode(rdfDto.getRdfContent());
+        String content = new String(decodedBytes);
+        System.out.println(content);
         try {
             WinkGraph graph = rdfToWinkConverter.convertRdf(content, fileName);
             return new ResponseEntity<>(scMemoryManager.uploadContour(fileName, graph), HttpStatus.CREATED);
