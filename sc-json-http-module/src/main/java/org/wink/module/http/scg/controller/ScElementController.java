@@ -4,6 +4,7 @@ import org.ostis.scmemory.model.exception.ScMemoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,11 +15,12 @@ import org.wink.engine.analyser.autocompleter.Autocompleter;
 import org.wink.engine.model.graph.impl.DefaultWinkGraphHeader;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
 import org.wink.engine.scmemory.ScMemoryManager;
-import org.wink.module.http.scg.dto.ExceptionResponseDto;
 import org.wink.module.http.scg.dto.WinkGraphDto;
 import org.wink.module.http.scg.mapper.ScJsonMapper;
 
 import java.util.List;
+
+import static org.wink.module.http.scg.controller.ControllerExceptionHandler.createExceptionResponseWithMessageAndCode;
 
 /**
  * @author Mikita Torap
@@ -28,7 +30,6 @@ import java.util.List;
 @RequestMapping("/element")
 public class ScElementController {
 
-    private static final String SC_MEMORY_EXCEPTION = "The request couldn't be processed due to the problems with ScMemory";
     private static final int INTERNAL_SERVER_ERROR_CODE = HttpStatus.INTERNAL_SERVER_ERROR.value();
     private final ScJsonMapper scJsonMapper;
     private final Autocompleter autocompleter;
@@ -46,12 +47,16 @@ public class ScElementController {
         WinkGraph graph = scJsonMapper.map(winkGraphDto.getScElements(),
                 new DefaultWinkGraphHeader(winkGraphDto.getFilename(), winkGraphDto.getNativeFormat()));
 
+        ResponseEntity<?> responseEntity;
         try {
-            return new ResponseEntity<>(manager.uploadContour(winkGraphDto.getFilename(), graph), HttpStatus.CREATED);
+            responseEntity = new ResponseEntity<>(manager.uploadContour(winkGraphDto.getFilename(), graph), HttpStatus.CREATED);
         } catch (ScMemoryException e) {
-            ExceptionResponseDto exceptionResponse = new ExceptionResponseDto(SC_MEMORY_EXCEPTION, INTERNAL_SERVER_ERROR_CODE);
-            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            responseEntity = new ResponseEntity<>(
+                    createExceptionResponseWithMessageAndCode(e.getMessage(), INTERNAL_SERVER_ERROR_CODE),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return responseEntity;
     }
 
     @GetMapping
@@ -60,4 +65,18 @@ public class ScElementController {
         return new ResponseEntity<>(autocompletionResult, HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestParam String name) {
+        ResponseEntity<?> responseEntity;
+        try {
+            manager.unload(name);
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (ScMemoryException e) {
+            responseEntity = new ResponseEntity<>(
+                    createExceptionResponseWithMessageAndCode(e.getMessage(), INTERNAL_SERVER_ERROR_CODE),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
+    }
 }

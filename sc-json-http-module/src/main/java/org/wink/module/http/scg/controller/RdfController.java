@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.wink.engine.converter.rdf.RdfToWinkConverter;
 import org.wink.engine.exceptions.RdfParseException;
@@ -19,6 +19,8 @@ import org.wink.module.http.scg.dto.RdfDto;
 
 import java.util.Base64;
 
+import static org.wink.module.http.scg.controller.ControllerExceptionHandler.createExceptionResponseWithMessageAndCode;
+
 /**
  * @author Mikhail Krautsou
  * @since 0.0.1
@@ -26,7 +28,7 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/rdf")
 public class RdfController {
-    private static final String SC_MEMORY_EXCEPTION = "The request couldn't be processed due to the problems with ScMemory";
+
     private static final int INTERNAL_SERVER_ERROR_CODE = HttpStatus.INTERNAL_SERVER_ERROR.value();
     private static final int BAD_REQUEST_CODE = HttpStatus.BAD_REQUEST.value();
     private final ScMemoryManager scMemoryManager;
@@ -49,21 +51,25 @@ public class RdfController {
             WinkGraph graph = rdfToWinkConverter.convertRdf(content, fileName);
             return new ResponseEntity<>(scMemoryManager.uploadContour(fileName, graph), HttpStatus.CREATED);
         } catch (ScMemoryException exception) {
-            ExceptionResponseDto exceptionResponse = new ExceptionResponseDto(SC_MEMORY_EXCEPTION, INTERNAL_SERVER_ERROR_CODE);
-            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(
+                    createExceptionResponseWithMessageAndCode(exception.getMessage(), INTERNAL_SERVER_ERROR_CODE),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (RdfParseException exception) {
-            ExceptionResponseDto exceptionResponse = new ExceptionResponseDto(exception.getMessage(), BAD_REQUEST_CODE);
-            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    createExceptionResponseWithMessageAndCode(exception.getMessage(), BAD_REQUEST_CODE),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
-    @DeleteMapping("/delete/{name}")
-    public ResponseEntity<?> delete(@PathVariable("name") String name) {
+    @DeleteMapping()
+    public ResponseEntity<?> delete(@RequestParam String name) {
         try {
             scMemoryManager.unload(name);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ScMemoryException e) {
-            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(
+                    createExceptionResponseWithMessageAndCode(e.getMessage(), INTERNAL_SERVER_ERROR_CODE),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
