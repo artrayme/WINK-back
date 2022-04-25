@@ -45,4 +45,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponseDto exceptionResponse = new ExceptionResponseDto(CANNOT_CREATE_NODE, INTERNAL_SERVER_ERROR_CODE);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    public static ExceptionResponseDto createExceptionResponseWithMessageAndCode(String exceptionMessage, int code) {
+        return new ExceptionResponseDto(exceptionMessage, code);
+    }
 }
