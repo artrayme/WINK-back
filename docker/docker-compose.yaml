@@ -12,7 +12,7 @@ services:
       test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
       interval: 30s
       retries: 100
-  app:
+  wink-back:
     depends_on:
       ostis:
         condition: service_healthy
