@@ -33,15 +33,12 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class OstisScMemoryManager implements ScMemoryManager {
-    private final static String NREL_MAIN_IDTF = "nrel_main_idtf";
     private final static String STRUCT_POSTFIX = "_struct";
     private final DefaultScContext context;
-    private final ScNode NREL_MAIN_IDTF_NODE;
     private final Map<String, List<? extends ScEdge>> loaded = new HashMap<>();
 
     public OstisScMemoryManager(DefaultScContext context) throws Exception {
         this.context = context;
-        NREL_MAIN_IDTF_NODE = context.findKeynode(NREL_MAIN_IDTF).get();
     }
 
     @Override
@@ -73,14 +70,9 @@ public class OstisScMemoryManager implements ScMemoryManager {
         List<ScEdge> edges = new ArrayList<>();
         for (WinkEdge edge : graph.getEdges()) {
             try {
-                ScElement source = winkToSc.get(edge.getSource());
-                ScElement target = winkToSc.get(edge.getTarget());
-                ScEdge resultEdge = context.createEdge(edge.getType(), source, target);
+                ScEdge resultEdge = context.createEdge(edge.getType(), winkToSc.get(edge.getSource()), winkToSc.get(edge.getTarget()));
                 edges.add(resultEdge);
                 winkToSc.put(edge, resultEdge);
-                if (source instanceof ScLink || target instanceof ScLink) {
-                    context.createEdge(EdgeType.ACCESS, NREL_MAIN_IDTF_NODE, resultEdge);
-                }
             } catch (ScMemoryException e) {
                 throw new CannotCreateEdgeException(e);
             }

@@ -46,7 +46,6 @@ public class RdfController {
         Base64.Decoder decoder = Base64.getDecoder();
         byte[] decodedBytes = decoder.decode(rdfDto.getRdfContent());
         String content = new String(decodedBytes);
-        System.out.println(content);
         try {
             WinkGraph graph = rdfToWinkConverter.convertRdf(content, fileName);
             return new ResponseEntity<>(scMemoryManager.uploadContour(fileName, graph), HttpStatus.CREATED);
