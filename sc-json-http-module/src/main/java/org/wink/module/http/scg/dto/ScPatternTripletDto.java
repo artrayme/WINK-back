@@ -1,43 +1,43 @@
 package org.wink.module.http.scg.dto;
 
-public class ScPatternTripletDto<T> {
+public class ScPatternTripletDto {
 
-    private ScPatternTripletElementDto<T> firstElement;
-    private ScPatternTripletElementDto<T> secondElement;
-    private ScPatternTripletElementDto<T> thirdElement;
+    private ScPatternTripletElementDto firstElement;
+    private ScPatternTripletElementDto secondElement;
+    private ScPatternTripletElementDto thirdElement;
 
     public ScPatternTripletDto() {
     }
 
-    public ScPatternTripletDto(ScPatternTripletElementDto<T> firstElement,
-                               ScPatternTripletElementDto<T> secondElement,
-                               ScPatternTripletElementDto<T> thirdElement) {
+    public ScPatternTripletDto(ScPatternTripletElementDto firstElement,
+                               ScPatternTripletElementDto secondElement,
+                               ScPatternTripletElementDto thirdElement) {
         this.firstElement = firstElement;
         this.secondElement = secondElement;
         this.thirdElement = thirdElement;
     }
 
-    public ScPatternTripletElementDto<T> getFirstElement() {
+    public ScPatternTripletElementDto getFirstElement() {
         return firstElement;
     }
 
-    public void setFirstElement(ScPatternTripletElementDto<T> firstElement) {
+    public void setFirstElement(ScPatternTripletElementDto firstElement) {
         this.firstElement = firstElement;
     }
 
-    public ScPatternTripletElementDto<T> getSecondElement() {
+    public ScPatternTripletElementDto getSecondElement() {
         return secondElement;
     }
 
-    public void setSecondElement(ScPatternTripletElementDto<T> secondElement) {
+    public void setSecondElement(ScPatternTripletElementDto secondElement) {
         this.secondElement = secondElement;
     }
 
-    public ScPatternTripletElementDto<T> getThirdElement() {
+    public ScPatternTripletElementDto getThirdElement() {
         return thirdElement;
     }
 
-    public void setThirdElement(ScPatternTripletElementDto<T> thirdElement) {
+    public void setThirdElement(ScPatternTripletElementDto thirdElement) {
         this.thirdElement = thirdElement;
     }
 }
