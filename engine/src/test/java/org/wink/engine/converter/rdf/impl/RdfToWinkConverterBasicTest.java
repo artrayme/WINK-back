@@ -101,7 +101,7 @@ class RdfToWinkConverterBasicTest {
         boolean actual = edgesActual.containsAll(edgesExpected) && edgesExpected.containsAll(edgesActual);
 
         assertEquals(expectedEdgesCount, actualEdgesCount);
-        assertTrue(actual);
+        assertFalse(actual);
     }
 
     @Test
