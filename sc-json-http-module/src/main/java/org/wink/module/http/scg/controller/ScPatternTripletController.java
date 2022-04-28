@@ -64,13 +64,13 @@ public class ScPatternTripletController {
                 String mainStructIdtf = "wink-main-construction_" + mainConstructionNumber++;
                 var mainStruct = context.resolveKeynode(mainStructIdtf, NodeType.STRUCT);
                 for (Stream<? extends ScElement> stream : constructionsList) {
-                    var struct = context.resolveKeynode("wink-construction_" + constructionNumber++, NodeType.STRUCT);
+//                    var struct = context.resolveKeynode("wink-construction_" + constructionNumber++, NodeType.STRUCT);
                     List<? extends ScElement> singleConstructionElements = stream.toList();
                     for (ScElement singleConstructionElement : singleConstructionElements) {
 //                        context.createEdge(EdgeType.ACCESS_CONST_POS_PERM, struct, singleConstructionElement);
                         context.createEdge(EdgeType.ACCESS_CONST_POS_PERM, mainStruct, singleConstructionElement);
                     }
-                    context.createEdge(EdgeType.ACCESS_CONST_POS_PERM, mainStruct, struct);
+//                    context.createEdge(EdgeType.ACCESS_CONST_POS_PERM, mainStruct, struct);
                 }
                 responseEntity = new ResponseEntity<>(mainStructIdtf, HttpStatus.OK);
             }
