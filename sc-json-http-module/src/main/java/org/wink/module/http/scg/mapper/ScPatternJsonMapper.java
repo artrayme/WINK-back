@@ -1,6 +1,7 @@
 package org.wink.module.http.scg.mapper;
 
 import org.ostis.api.context.DefaultScContext;
+import org.ostis.scmemory.model.element.UnknownScElement;
 import org.ostis.scmemory.model.element.edge.EdgeType;
 import org.ostis.scmemory.model.element.link.LinkType;
 import org.ostis.scmemory.model.element.node.NodeType;
@@ -68,7 +69,11 @@ public class ScPatternJsonMapper {
                 }
             }
             case "type" -> {
-                var type = ScTypesMap.INSTANCE.getTypes().get(Integer.parseInt(tripletElementDto.getValue()));
+                int typeCode = Integer.parseInt(tripletElementDto.getValue());
+                if (typeCode == 0){
+                    yield new TypePatternElement<>(UnknownScElement.ELEMENT, new AliasPatternElement(tripletElementDto.getAlias()));
+                }
+                var type = ScTypesMap.INSTANCE.getTypes().get(typeCode);
                 if (type != null) {
                     if (type instanceof NodeType node) {
                         yield new TypePatternElement<>(node, new AliasPatternElement(tripletElementDto.getAlias()));
