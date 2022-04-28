@@ -1,20 +1,20 @@
 package org.wink.module.http.scg.dto;
 
-public class ScPatternTripletElementDto<T> {
+public class ScPatternTripletElementDto {
 
     private String type;
-    private T value;
+    private String value;
     private String alias;
 
     public ScPatternTripletElementDto() {
     }
 
-    public ScPatternTripletElementDto(String type, T value) {
+    public ScPatternTripletElementDto(String type, String value) {
         this.type = type;
         this.value = value;
     }
 
-    public ScPatternTripletElementDto(String type, T value, String alias) {
+    public ScPatternTripletElementDto(String type, String value, String alias) {
         this(type, value);
         this.alias = alias;
     }
@@ -27,11 +27,11 @@ public class ScPatternTripletElementDto<T> {
         this.type = type;
     }
 
-    public T getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
