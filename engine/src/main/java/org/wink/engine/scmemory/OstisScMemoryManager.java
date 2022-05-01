@@ -132,7 +132,8 @@ public class OstisScMemoryManager implements ScMemoryManager {
             }
         } else if (element instanceof WinkIdtfiableWrapper wrapper) {
             try {
-                return Collections.singletonList(context.resolveKeynode(wrapper.getIdtf(), NodeType.STRUCT));
+                NodeType type = ((WinkNode) wrapper.getElement()).getType();
+                return Collections.singletonList(context.resolveKeynode(wrapper.getIdtf(), type));
             } catch (ScMemoryException e) {
                 throw new CannotCreateIdentifiableElementException(e);
             }
