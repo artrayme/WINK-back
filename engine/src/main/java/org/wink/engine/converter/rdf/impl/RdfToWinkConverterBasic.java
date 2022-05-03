@@ -17,27 +17,34 @@ import org.ostis.scmemory.model.element.node.NodeType;
 import org.wink.engine.converter.rdf.RdfToWinkConverter;
 import org.wink.engine.converter.rdf.util.RdfValidator;
 import org.wink.engine.exceptions.RdfParseException;
-import org.wink.engine.model.graph.impl.DefaultWinkGraph;
-import org.wink.engine.model.graph.impl.DefaultWinkGraphHeader;
-import org.wink.engine.model.graph.impl.WinkEdge;
-import org.wink.engine.model.graph.impl.WinkLink;
-import org.wink.engine.model.graph.impl.WinkLinkFloat;
-import org.wink.engine.model.graph.impl.WinkLinkInteger;
-import org.wink.engine.model.graph.impl.WinkLinkString;
-import org.wink.engine.model.graph.impl.WinkNode;
+import org.wink.engine.model.graph.impl.*;
 import org.wink.engine.model.graph.interfaces.WinkElement;
 import org.wink.engine.model.graph.interfaces.WinkGraph;
 import org.wink.engine.model.graph.interfaces.WinkGraphHeader;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Mikhail Krautsou
  * @since 0.0.1
  */
 public class RdfToWinkConverterBasic implements RdfToWinkConverter {
-    public static final String RDF_FORMAT = "RDF/XML";
+    public static final String RDF_FORMAT;
+    private static final String RDF_SYNTAX_URI;
+    private static final String RDF_SYNTAX_IDTF;
+    private static final WinkIdtfiableWrapper literalContent;
+    private static final WinkIdtfiableWrapper lri;
+
+    static {
+        RDF_FORMAT = "RDF/XML";
+        RDF_SYNTAX_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#([a-zA-Z]+)";
+        RDF_SYNTAX_IDTF = "rdf_nrel_";
+        literalContent = new WinkIdtfiableWrapper(new WinkNode(NodeType.CONST_NO_ROLE), "nrel_literal_content");
+        lri = new WinkIdtfiableWrapper(new WinkNode(NodeType.CONST_NO_ROLE), "nrel_lri");
+    }
 
     @Override
     public WinkGraph convertRdf(String rdfFileContent, String rdfFileName) throws RdfParseException {
@@ -60,9 +67,9 @@ public class RdfToWinkConverterBasic implements RdfToWinkConverter {
             RDFNode object = statement.getObject();
 
             WinkElement subjectWink = processSubject(subject, rdfElements, graph);
-            WinkElement predicateWink = processPredicate(predicate, rdfElements);
+            WinkElement predicateWink = processPredicate(predicate, rdfElements, graph);
             WinkElement objectWink = processObject(object, rdfElements, graph);
-            WinkEdge subjectObjectEdge = new WinkEdge(EdgeType.ACCESS_CONST_POS_PERM, subjectWink, objectWink);
+            WinkEdge subjectObjectEdge = new WinkEdge(EdgeType.D_COMMON_CONST, subjectWink, objectWink);
             graph.addEdge(subjectObjectEdge);
             WinkEdge predicateEdge = new WinkEdge(EdgeType.ACCESS_CONST_POS_PERM, predicateWink, subjectObjectEdge);
             graph.addEdge(predicateEdge);
@@ -75,24 +82,37 @@ public class RdfToWinkConverterBasic implements RdfToWinkConverter {
         if (rdfElements.containsKey(subject)) {
             return rdfElements.get(subject);
         }
-        WinkElement subjectNode = new WinkNode(NodeType.NODE);
+        WinkElement subjectNode = new WinkNode(NodeType.CONST);
         rdfElements.put(subject, subjectNode);
         String subjectURI = subject.getURI();
         if (subjectURI != null) {
             WinkElement subjectLink = new WinkLinkString(LinkType.LINK, subjectURI);
-            WinkEdge subjectEdge = new WinkEdge(EdgeType.ACCESS_CONST_POS_PERM, subjectLink, subjectNode);
+            WinkEdge subjectEdge = new WinkEdge(EdgeType.D_COMMON_CONST, subjectNode, subjectLink);
+            WinkEdge idtfSubjectEdge = new WinkEdge(EdgeType.ACCESS_CONST_POS_PERM, lri, subjectEdge);
             winkGraph.addEdge(subjectEdge);
+            winkGraph.addEdge(idtfSubjectEdge);
         }
         return subjectNode;
     }
 
-    private WinkElement processPredicate(Property predicate, HashMap<Object, WinkElement> rdfElements) {
+    private WinkElement processPredicate(Property predicate, HashMap<Object, WinkElement> rdfElements, WinkGraph winkGraph) {
         if (rdfElements.containsKey(predicate)) {
             return rdfElements.get(predicate);
         }
-        WinkElement predicateLink = new WinkLinkString(LinkType.LINK, predicate.getURI());
-        rdfElements.put(predicate, predicateLink);
-        return predicateLink;
+        String predicateUri = predicate.getURI();
+        WinkElement predicateNode = new WinkNode(NodeType.CONST_NO_ROLE);
+        Matcher rdfSyntaxMatcher = Pattern.compile(RDF_SYNTAX_URI).matcher(predicateUri);
+        if (rdfSyntaxMatcher.matches()) {
+            String idtf = RDF_SYNTAX_IDTF + rdfSyntaxMatcher.group(1);
+            predicateNode = new WinkIdtfiableWrapper(predicateNode, idtf);
+        }
+        WinkElement predicateLink = new WinkLinkString(LinkType.LINK, predicateUri);
+        WinkEdge predicateEdge = new WinkEdge(EdgeType.D_COMMON_CONST, predicateNode, predicateLink);
+        WinkEdge idtfPredicateEdge = new WinkEdge(EdgeType.ACCESS_CONST_POS_PERM, lri, predicateEdge);
+        winkGraph.addEdge(predicateEdge);
+        winkGraph.addEdge(idtfPredicateEdge);
+        rdfElements.put(predicate, predicateNode);
+        return predicateNode;
     }
 
     private WinkElement processObject(RDFNode object, HashMap<Object, WinkElement> rdfElements, WinkGraph winkGraph) {
@@ -114,8 +134,10 @@ public class RdfToWinkConverterBasic implements RdfToWinkConverter {
             } else {
                 objectLink = new WinkLinkString(LinkType.LINK, literal.getString());
             }
-            WinkEdge objectEdge = new WinkEdge(EdgeType.ACCESS_CONST_POS_PERM, objectLink, objectNode);
+            WinkEdge objectEdge = new WinkEdge(EdgeType.D_COMMON_CONST, objectNode, objectLink);
+            WinkEdge idtfObjectEdge = new WinkEdge(EdgeType.ACCESS_CONST_POS_PERM, literalContent, objectEdge);
             winkGraph.addEdge(objectEdge);
+            winkGraph.addEdge(idtfObjectEdge);
             return objectNode;
         }
     }
