@@ -7,6 +7,7 @@ import org.ostis.scmemory.websocketmemory.util.internal.ScTypesMap;
 import org.springframework.stereotype.Component;
 import org.wink.engine.model.graph.impl.DefaultWinkGraph;
 import org.wink.engine.model.graph.impl.WinkEdge;
+import org.wink.engine.model.graph.impl.WinkIdtfiableWrapper;
 import org.wink.engine.model.graph.impl.WinkLink;
 import org.wink.engine.model.graph.impl.WinkLinkFloat;
 import org.wink.engine.model.graph.impl.WinkLinkInteger;
@@ -43,11 +44,15 @@ public class ScJsonMapper {
             String element = scElement.getElement();
             Integer type = scElement.getType();
             Object content = scElement.getContent();
+            String id = scElement.getId();
 
             switch (element) {
                 case NODE -> {
                     WinkNode winkNode = getWinkNode(type);
-                    winkElements.add(winkNode);
+                    if (!id.equals("..."))
+                        winkElements.add(new WinkIdtfiableWrapper(winkNode, id));
+                    else
+                        winkElements.add(winkNode);
                 }
                 case LINK -> {
                     WinkLink winkLink = getWinkLink(type, content);
@@ -90,8 +95,8 @@ public class ScJsonMapper {
         int sourceValue = scElement.getSource().getValue();
         int targetValue = scElement.getTarget().getValue();
 
-        WinkElement source = winkElements.get(sourceValue);
-        WinkElement target = winkElements.get(targetValue);
+        WinkElement source = winkElements.get(sourceValue - 1);
+        WinkElement target = winkElements.get(targetValue - 1);
 
         return new WinkEdge(edgeType, source, target);
     }

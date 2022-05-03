@@ -1,17 +1,23 @@
 package org.wink.module.http.scg.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Mikita Torap
  * @since 0.0.1
  */
 public class ScElementDto {
-
+    @JsonProperty("el")
     private String element;
     private Integer type;
+    @JsonProperty("value")
     private Object content;
+    @JsonProperty("src")
     private ScAdjacentElementDto source;
+    @JsonProperty("trg")
     private ScAdjacentElementDto target;
+    private String id;
 
     public ScElementDto() {
     }
@@ -65,5 +71,9 @@ public class ScElementDto {
 
     public void setTarget(ScAdjacentElementDto target) {
         this.target = target;
+    }
+
+    public String getId() {
+        return id;
     }
 }
