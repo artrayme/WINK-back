@@ -49,7 +49,7 @@ public class ScJsonMapper {
             switch (element) {
                 case NODE -> {
                     WinkNode winkNode = getWinkNode(type);
-                    if (!id.equals("..."))
+                    if (id != null && !id.equals("..."))
                         winkElements.add(new WinkIdtfiableWrapper(winkNode, id));
                     else
                         winkElements.add(winkNode);

@@ -36,8 +36,8 @@ public class ScJsonMapperTest {
     public static void setUp() {
         scJsonMapper = new ScJsonMapper();
         winkGraphHeader = new DefaultWinkGraphHeader("graph1", "txt");
-        firstElementReference = new ScAdjacentElementDto("ref", 0);
-        secondElementReference = new ScAdjacentElementDto("ref", 1);
+        firstElementReference = new ScAdjacentElementDto("ref", 1);
+        secondElementReference = new ScAdjacentElementDto("ref", 2);
     }
 
     @BeforeEach
